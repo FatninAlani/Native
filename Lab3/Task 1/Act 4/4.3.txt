@@ -1,0 +1,1 @@
+val treatFunction = trickOrTreat(false) { "$it quarters" }

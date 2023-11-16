@@ -1,0 +1,10 @@
+fun main() {
+    val coins: (Int) -> String = { quantity ->
+        "$quantity quarters"
+    }
+
+    val treatFunction = trickOrTreat(false, coins)
+    val trickFunction = trickOrTreat(true, null)
+    treatFunction()
+    trickFunction()
+}
