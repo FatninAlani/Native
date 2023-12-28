@@ -1,0 +1,59 @@
+package com.example.task2;
+
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.os.Bundle;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
+    private SensorManager senseMan;
+    private Sensor lightSensor;
+    private TextView textView;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        textView = (TextView) findViewById(R.id.textview);
+
+        senseMan = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        lightSensor = senseMan.getDefaultSensor(Sensor.TYPE_LIGHT);
+
+        if (lightSensor != null) {
+            Toast.makeText(this, "Light sensor found", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Light sensor not found", Toast.LENGTH_SHORT).show();
+        }
+
+        senseMan.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        textView.setText("Light Level: " + event.values[0]);
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        // Not needed for this example
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        senseMan.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        senseMan.unregisterListener(this);
+    }
+}

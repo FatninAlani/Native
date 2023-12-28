@@ -1,0 +1,98 @@
+package com.example.task3;
+
+import static com.example.task3.R.*;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.os.Bundle;
+import android.widget.TextView;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
+
+   SensorManager sensorManager;
+   Sensor accelerometer;
+   Sensor gyroscope;
+   Sensor magnetometer;
+
+     TextView accelerometerValues;
+     TextView gyroscopeValues;
+    TextView magnetometerValues;
+
+    @SuppressLint("MissingInflatedId")
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(layout.activity_main);
+
+        accelerometerValues = findViewById(id.accelerometerValues);
+        gyroscopeValues = findViewById(id.gyroscopeValues);
+        magnetometerValues = findViewById(id.magnetometerValues);
+
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
+        if (accelerometer != null) {
+            sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+        if (gyroscope != null) {
+            sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+        if (magnetometer != null) {
+            sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        switch (event.sensor.getType()) {
+            case Sensor.TYPE_ACCELEROMETER:
+                accelerometerValues.setText("Accelerometer: X = " + event.values[0] +
+                        ", Y = " + event.values[1] +
+                        ", Z = " + event.values[2]);
+                break;
+            case Sensor.TYPE_GYROSCOPE:
+                gyroscopeValues.setText("Gyroscope: X = " + event.values[0] +
+                        ", Y = " + event.values[1] +
+                        ", Z = " + event.values[2]);
+                break;
+            case Sensor.TYPE_MAGNETIC_FIELD:
+                magnetometerValues.setText("Magnetometer: X = " + event.values[0] +
+                        ", Y = " + event.values[1] +
+                        ", Z = " + event.values[2]);
+                break;
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        // Not needed for this example
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (accelerometer != null) {
+            sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+        if (gyroscope != null) {
+            sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+        if (magnetometer != null) {
+            sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(this);
+    }
+}
